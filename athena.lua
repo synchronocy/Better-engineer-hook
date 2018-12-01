@@ -285,22 +285,12 @@ function ESP(v)
 end
 function staff()
 	function ad(ply)
-		local zOffset = 50 // unsure why we offset by 50 
-		local x = ply:GetPos().x			//Get the X position of our player
-		local y = ply:GetPos().y			//Get the Y position of our player
-		local z = ply:GetPos().z			//Get the Z position of our player
-		local pos = Vector(x,y,z+zOffset)	//Add our offset onto the Vector
-		local pos2d = pos:ToScreen()		//Change the 3D vector to a 2D one
-		draw.DrawText("Admin","Default",pos2d.x,pos2d.y,Color(255,255,255,255),TEXT_ALIGN_CENTER)	//Draw the indicator
+		local pos = (ply:GetPos() + Vector( 0, 0, 50 )):ToScreen()
+		draw.DrawText("Admin","Default",pos.x,pos.y,Color(255,255,255,255),TEXT_ALIGN_CENTER)
 	end
 	function sad(ply)
-		local zOffset = 50 // unsure why we offset by 50 
-		local x = ply:GetPos().x			//Get the X position of our player
-		local y = ply:GetPos().y			//Get the Y position of our player
-		local z = ply:GetPos().z			//Get the Z position of our player
-		local pos = Vector(x,y,z+zOffset)	//Add our offset onto the Vector
-		local pos2d = pos:ToScreen()		//Change the 3D vector to a 2D one
-		draw.DrawText("SuperAdmin","Default",pos2d.x,pos2d.y,Color(255,0,0,255),TEXT_ALIGN_CENTER)	//Draw the indicator
+		local pos = (ply:GetPos() + Vector( 0, 0, 50 )):ToScreen()
+		draw.DrawText("Superadmin","Default",pos.x,pos.y,Color(255,0,0,255),TEXT_ALIGN_CENTER)
 	end
 	for k,v in pairs(player.GetAll()) do	
 		if v:IsSuperAdmin() then
