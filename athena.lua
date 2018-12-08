@@ -4,6 +4,7 @@
 TODO 
 [+] Entity ESP [+]
 [+] Color Changer [+]
+[+] Tidy up code [+]
 ]]--
 _G.counter = 0
 local t = {}
@@ -18,8 +19,13 @@ t.esp.weapon = false
 t.esp.health = false
 t.esp.skeleton = false
 t.esp.entity = false
+t.esp.gskeleton = false
 t.esp.xyz = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
+
+--[[for k,v in pairs(t.esp) do
+	print(k,v)
+end]]--
 local function Copy1(tt, lt)
 	local copy = {}
 	if lt then
@@ -41,9 +47,9 @@ local function Copy1(tt, lt)
 	end
 	return copy
 end
-local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
-local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
-local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
+local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity", "Glowing Skeleton"}
+local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity", "gskeleton"}
+local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity","gskeleton"}
 local me = LocalPlayer()
 local mpos = me:GetPos()
 local counter = 0 
@@ -88,7 +94,6 @@ local function btn_paint(but)
 	local function view_paint(view)
 		function view.Paint()
 			draw.RoundedBox(0, 0, 0, view:GetWide(), view:GetTall(), Color(102,0,255,75)) -- Entity Column Background Color 
-			--draw.RoundedBox(0, 1, 1, view:GetWide() - 2, view:GetTall() - 2, Color())
 		end
 	end	
 
@@ -194,7 +199,6 @@ function menu()
 
 	function view.Header.Paint()
 		draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150))
-		--draw.RoundedBox(0, 1, 1, view.Header:GetWide() - 2, view.Header:GetTall() - 2, BgColor)
 		view.Header:SetTextColor(Color(0,0,0,255))
 	end
 
@@ -350,7 +354,11 @@ function ESP(v) -- courtesy of pasteware
 			local bonepos, parentpos = em.GetBonePosition(v, i), em.GetBonePosition(v, parent);
 			if(!bonepos || !parentpos || bonepos == origin) then continue; end
 			local bs, ps = vm.ToScreen(bonepos), vm.ToScreen(parentpos);
-			surface.SetDrawColor(255, 255, 255);
+			if t.esp.gskeleton == true then
+				surface.SetDrawColor(math.random(0,255)%360,math.random(0,255)%360,math.random(0,255)%360, 255);
+			else
+				surface.SetDrawColor(255, 255, 255);
+			end
 			surface.DrawLine(bs.x, bs.y, ps.x, ps.y);
 		end
 	end		
@@ -372,7 +380,7 @@ function staff()
 		local z = ply:GetPos().z			//Get the Z position of our player
 		local pos = Vector(x,y,z+zOffset)	//Add our offset onto the Vector
 		local pos2d = pos:ToScreen()		//Change the 3D vector to a 2D one
-		draw.DrawText("SuperAdmin","Default",pos2d.x,pos2d.y,Color(255,0,0,255),TEXT_ALIGN_CENTER)	//Draw the indicator
+		draw.DrawText("SuperAdmin","Default",pos2d.x,pos2d.y,Color(math.random(0,255)%360,math.random(0,255)%360,math.random(0,255)%360, 255),TEXT_ALIGN_CENTER)	//Draw the indicator
 	end
 	for k,v in pairs(player.GetAll()) do	
 		if v:IsSuperAdmin() then
