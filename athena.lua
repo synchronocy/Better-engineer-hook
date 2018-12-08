@@ -1,12 +1,9 @@
-
 -- project Athena --
 
 --[[ For refernce I still have a ways to go but for now I'm pasting from documentation 
-
 TODO 
 [+] Entity ESP [+]
 [+] Color Changer [+]
-[+] Tidy up code [+]
 ]]--
 _G.counter = 0
 local t = {}
@@ -24,12 +21,6 @@ t.esp.weapon = false
 t.esp.skeleton = false
 t.esp.entity = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
-local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
-local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
-local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
-local me = LocalPlayer()
-local mpos = me:GetPos()
-local counter = 0 
 local function Copy1(tt, lt)
 	local copy = {}
 	if lt then
@@ -51,6 +42,12 @@ local function Copy1(tt, lt)
 	end
 	return copy
 end
+local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
+local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
+local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
+local me = LocalPlayer()
+local mpos = me:GetPos()
+local counter = 0 
 local surface = Copy1(surface);
 local vgui = Copy1(vgui);
 local input = Copy1(input);
@@ -63,6 +60,7 @@ local em = FindMetaTable"Entity";
 local pm = FindMetaTable"Player";
 local vm = FindMetaTable"Vector";
 local render = Copy1(render);
+
 
 
 if(!IsValid(me)) then me = LocalPlayer() return end
@@ -151,18 +149,7 @@ function menu()
 		end
 		posH = posH +20
 	end
-	--[[local MiscAC = vgui.Create( "DCheckBoxLabel", Misc )
-	MiscAC:SetText("Skeleton")
-	MiscAC:SetPos(5,167)
-	MiscAC:SetChecked(t.esp.s)
-	MiscAC:SizeToContents()
-	function MiscAC:OnChange( MiscAC )
-		if MiscAc then
-			t.esp.s = 1
-		else
-			t.esp.s = false
-		end
-	end]]--
+	
 	local backpanel = vgui.Create("DFrame", EntityFinder)
 	backpanel:SetTitle("Entity list")
 	backpanel:Center()
