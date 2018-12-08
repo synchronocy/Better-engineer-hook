@@ -8,18 +8,17 @@ TODO
 _G.counter = 0
 local t = {}
 t.esp = {}
-t.esp.xyz = false
 t.esp.enabled = false
-t.esp.teamonly = false
-t.esp.enemyonly = false
+t.esp.team = false
+t.esp.enemy = false
 t.esp.admin = false
-t.esp.showxyz = false
-t.esp.box = false
 t.esp.name = false
-t.esp.health = false
+t.esp.box = false
 t.esp.weapon = false
+t.esp.health = false
 t.esp.skeleton = false
 t.esp.entity = false
+t.esp.xyz = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
 local function Copy1(tt, lt)
 	local copy = {}
