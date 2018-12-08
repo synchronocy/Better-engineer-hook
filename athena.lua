@@ -9,17 +9,6 @@ TODO
 [+] Tidy up code [+]
 ]]--
 _G.counter = 0
---[[
-_G.espe = 0
-_G.espen = 0
-_G.espent = 0
-_G.espa = 0
-_G.espb = 0
-_G.espt = 0
-_G.esph = 0
-_G.esps = 0
-_G.espna = 0
-_G.espw = 0]]--
 local t = {}
 t.esp = {}
 t.esp.xyz = false
@@ -270,19 +259,6 @@ function menu()
 			t.esp.entity = false
 		end
 	end
-	
-	--[[local MiscAC = vgui.Create( "DCheckBoxLabel", Misc )
-	MiscAC:SetText("Skeleton")
-	MiscAC:SetPos(5,167)
-	MiscAC:SetChecked(t.esp.s)
-	MiscAC:SizeToContents()
-	function MiscAC:OnChange( MiscAC )
-		if MiscAc then
-			t.esp.s = 1
-		else
-			t.esp.s = false
-		end
-	end]]--
 	local backpanel = vgui.Create("DFrame", EntityFinder)
 	backpanel:SetTitle("Entity list")
 	backpanel:Center()
@@ -328,7 +304,6 @@ function menu()
 
 	function view.Header.Paint()
 		draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150))
-		--draw.RoundedBox(0, 1, 1, view.Header:GetWide() - 2, view.Header:GetTall() - 2, BgColor)
 		view.Header:SetTextColor(Color(0,0,0,255))
 	end
 
