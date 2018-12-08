@@ -23,25 +23,13 @@ t.esp.health = false
 t.esp.weapon = false
 t.esp.skeleton = false
 t.esp.entity = false
-t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"} -- for now.
---[[for k,v in pairs(t.esp) do
-	print(k,v) -- create multiple tabs using a for loop? save a whole bunch of time/code
-end]]--
+t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
+local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
+local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
+local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
 local me = LocalPlayer()
 local mpos = me:GetPos()
 local counter = 0 
-local surface = Copy1(surface);
-local vgui = Copy1(vgui);
-local input = Copy1(input);
-local gui = Copy1(gui);
-local math = Copy1(math);
-local file = Copy1(file);
-local util = Copy1(util);
-local FindMetaTable = FindMetaTable;
-local em = FindMetaTable"Entity";
-local pm = FindMetaTable"Player";
-local vm = FindMetaTable"Vector";
-local render = Copy1(render);
 local function Copy1(tt, lt)
 	local copy = {}
 	if lt then
@@ -63,6 +51,18 @@ local function Copy1(tt, lt)
 	end
 	return copy
 end
+local surface = Copy1(surface);
+local vgui = Copy1(vgui);
+local input = Copy1(input);
+local gui = Copy1(gui);
+local math = Copy1(math);
+local file = Copy1(file);
+local util = Copy1(util);
+local FindMetaTable = FindMetaTable;
+local em = FindMetaTable"Entity";
+local pm = FindMetaTable"Player";
+local vm = FindMetaTable"Vector";
+local render = Copy1(render);
 
 
 if(!IsValid(me)) then me = LocalPlayer() return end
@@ -97,6 +97,7 @@ local function btn_paint(but)
 
 function menu()
     _G.counter = 1
+	local posH = 5
     -- Menu --
     local Frame = vgui.Create( "DFrame")
     Frame:SetParent( DermaPanel )
@@ -129,136 +130,39 @@ function menu()
 		draw.RoundedBox( 0, 0, 0, w, h, Color( 102,0,255, 150 ) )
     end
 	
-	
-	local ESPEnabled = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPEnabled:SetText("Enabled")
-	ESPEnabled:SetChecked(t.esp.enabled)
-	ESPEnabled:SetPos(5,7)
-	ESPEnabled:SizeToContents()
-	function ESPEnabled:OnChange( ESPE )
-		if ESPE then
-			t.esp.enabled = true
-		else
-			t.esp.enabled = false
+	for k, v in pairs(menuitems) do
+		local change = menutable[k]
+		local Easp = 'ESP'	
+		local conName = Easp..v
+		local conname = string.lower(v)
+		local conNAME = string.upper(v)
+		local conByte = string.len(conName)
+		local conName = vgui.Create( "DCheckBoxLabel", ESP )
+		conName:SetText(menunames[k])
+		conName:SetPos(5,posH)
+		conName:SetChecked(t.esp[''..menutable[k]])
+		conName:SizeToContents()
+		function conName:OnChange( change )
+			if change then
+				t.esp[''..menutable[k]] = true
+			else
+				t.esp[''..menutable[k]] = false
+			end
 		end
+		posH = posH +20
 	end
-	
-	local ESPTeam = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPTeam:SetText("Team Only")
-	ESPTeam:SetChecked(t.esp.team)
-	ESPTeam:SetPos(5,27)
-	ESPTeam:SizeToContents()
-	function ESPTeam:OnChange( ESPT )
-		if ESPT then
-			t.esp.team = true
+	--[[local MiscAC = vgui.Create( "DCheckBoxLabel", Misc )
+	MiscAC:SetText("Skeleton")
+	MiscAC:SetPos(5,167)
+	MiscAC:SetChecked(t.esp.s)
+	MiscAC:SizeToContents()
+	function MiscAC:OnChange( MiscAC )
+		if MiscAc then
+			t.esp.s = 1
 		else
-			t.esp.team = false
+			t.esp.s = false
 		end
-	end
-	
-	local ESPEnemy = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPEnemy:SetText("Enemy Only")
-	ESPEnemy:SetChecked(t.esp.enemy)
-	ESPEnemy:SetPos(5,47)
-	ESPEnemy:SizeToContents()
-    function ESPEnemy:OnChange( ESPEN )
-		if ESPEN then
-			t.esp.enemy = 1
-		else
-			t.esp.enemy = false
-		end
-	end
-	
-	local ESPAdmin = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPAdmin:SetText("Admins")
-	ESPAdmin:SetPos(5,67)
-	ESPAdmin:SetChecked(t.esp.admin)
-	ESPAdmin:SizeToContents()
-	--ESPAdmin:Size
-	function ESPAdmin:OnChange( ESPA )
-		if ESPA then
-			t.esp.admin = true
-		else
-			t.esp.admin = false
-		end
-	end
-	
-	local ESPName = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPName:SetText("Names")
-	ESPName:SetPos(5,87)
-	ESPName:SetChecked(t.esp.name)
-	ESPName:SizeToContents()
-	function ESPName:OnChange( ESPNA )
-		if ESPNA then
-			t.esp.name = true
-		else
-			t.esp.name = false
-		end
-	end
-	local ESPHealth = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPHealth:SetText("Health")
-	ESPHealth:SetPos(5,147)
-	ESPHealth:SetChecked(t.esp.health)
-	ESPHealth:SizeToContents()
-	function ESPHealth:OnChange( ESPH )
-		if ESPH then
-			t.esp.health = true
-		else
-			t.esp.health = false
-		end
-	end
-	
-	local ESPBox = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPBox:SetText("2D Boxes")
-	ESPBox:SetPos(5,107)
-	ESPBox:SetChecked(t.esp.box)
-	ESPBox:SizeToContents()
-	function ESPBox:OnChange( ESPB )
-		if ESPB then
-			t.esp.box = true
-		else
-			t.esp.box = false
-		end
-	end
-	
-	local ESPWeapon = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPWeapon:SetText("Weapons")
-	ESPWeapon:SetPos(5,127)
-	ESPWeapon:SetChecked(t.esp.weapon)
-	ESPWeapon:SizeToContents()
-	function ESPWeapon:OnChange( ESPW )
-		if ESPW then
-			t.esp.weapon = true
-		else
-			t.esp.weapon = false
-		end
-	end
-	
-	local ESPSkeleton = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPSkeleton:SetText("Skeleton")
-	ESPSkeleton:SetPos(5,167)
-	ESPSkeleton:SetChecked(t.esp.skeleton)
-	ESPSkeleton:SizeToContents()
-	function ESPSkeleton:OnChange( ESPS )
-		if ESPS then
-			t.esp.skeleton = true
-		else
-			t.esp.skeleton = false
-		end
-	end
-	
-	local ESPEntity = vgui.Create( "DCheckBoxLabel", ESP )
-	ESPEntity:SetText("Entity")
-	ESPEntity:SetPos(5,187)
-	ESPEntity:SetChecked(t.esp.skeleton)
-	ESPEntity:SizeToContents()
-	function ESPEntity:OnChange( ESPENT )
-		if ESPS then
-			t.esp.entity = true
-		else
-			t.esp.entity = false
-		end
-	end
+	end]]--
 	local backpanel = vgui.Create("DFrame", EntityFinder)
 	backpanel:SetTitle("Entity list")
 	backpanel:Center()
@@ -304,6 +208,7 @@ function menu()
 
 	function view.Header.Paint()
 		draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150))
+		--draw.RoundedBox(0, 1, 1, view.Header:GetWide() - 2, view.Header:GetTall() - 2, BgColor)
 		view.Header:SetTextColor(Color(0,0,0,255))
 	end
 
