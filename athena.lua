@@ -2,9 +2,10 @@
 
 --[[ For refernce I still have a ways to go but for now I'm pasting from documentation 
 TODO 
-[+] Entity ESP [+]
 [+] Color Changer [+]
 [+] Tidy up code [+]
+[+] Automate other tabs
+[+] Improve current automation system [+]
 ]]--
 _G.counter = 0
 local t = {}
@@ -19,6 +20,7 @@ t.esp.weapon = false
 t.esp.health = false
 t.esp.skeleton = false
 t.esp.entity = false
+t.esp.entityr = false
 t.esp.gskeleton = false
 t.esp.xyz = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
@@ -47,9 +49,9 @@ local function Copy1(tt, lt)
 	end
 	return copy
 end
-local menunames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity", "Glowing Skeleton"}
-local menuitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity", "gskeleton"}
-local menutable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity","gskeleton"}
+local esptabnames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
+local esptabitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
+local esptabtable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
 local me = LocalPlayer()
 local mpos = me:GetPos()
 local counter = 0 
@@ -127,185 +129,206 @@ function menu()
 	Misc.Paint = function( self, w, h )
 		draw.RoundedBox( 0, 0, 0, w, h, Color( 102,0,255, 150 ) )
     end
-	local EntityFinder = vgui.Create( "DPanel" )
-	EntityFinder.Paint = function( self, w, h )
-		draw.RoundedBox( 0, 0, 0, w, h, Color( 102,0,255, 150 ) )
-    end
 	
-	for k, v in pairs(menuitems) do
-		local change = menutable[k]
+	for k, v in pairs(esptabitems) do
+		local change = esptabtable[k]
 		local Easp = 'ESP'	
 		local conName = Easp..v
 		local conname = string.lower(v)
 		local conNAME = string.upper(v)
 		local conByte = string.len(conName)
 		local conName = vgui.Create( "DCheckBoxLabel", ESP )
-		conName:SetText(menunames[k])
+		conName:SetText(esptabnames[k])
 		conName:SetPos(5,posH)
-		conName:SetChecked(t.esp[''..menutable[k]])
+		conName:SetChecked(t.esp[''..esptabtable[k]])
 		conName:SizeToContents()
 		function conName:OnChange( change )
 			if change then
-				t.esp[''..menutable[k]] = true
+				t.esp[''..esptabtable[k]] = true
 			else
-				t.esp[''..menutable[k]] = false
+				t.esp[''..esptabtable[k]] = false
 			end
 		end
 		posH = posH +20
 	end
-	
-	local backpanel = vgui.Create("DFrame", EntityFinder)
-	backpanel:SetTitle("Entity list")
-	backpanel:Center()
-	backpanel:SetDraggable( false )
-	backpanel:SetSize( ScrW() * 0.50, ScrH() * 0.50 )
-	backpanel:ShowCloseButton( false )
-	function backpanel.Paint()
-		draw.RoundedBox(2, 0, 0, backpanel:GetWide(), backpanel:GetTall(), Color(255,255,255,255))
-		draw.RoundedBox(2, 1, 1, backpanel:GetWide() - 2, backpanel:GetTall() - 2, Color(102,0,255,150)) -- Border
-		draw.RoundedBox(0, 0, 0, backpanel:GetWide(), 22, Color(102,0,255,150)) -- Outer Border 
-	end
 
-	local view1 = vgui.Create("DListView", backpanel)
-	view1:SetPos(5,30)
-	view1:SetSize(backpanel:GetWide()/2 - 30, backpanel:GetTall()-35)
-	local view = view1:AddColumn("Not on ESP")
-	view1:SetMultiSelect( false )
-
-	view_paint(view1)
-
-	local entities = {}
-	for k,v in pairs(ents.GetAll()) do
-		local class = v:GetClass()
-		if !table.HasValue(entities,class) then
-			table.insert(entities,class)
-			view1:AddLine(class)
-		end
-	end
-
-	for k,v in pairs(view1:GetLines()) do
-		function v.Paint()
-			local val = v:GetValue()
-			draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(102,0,255,0)) -- Not on ESP Column Color
-			v.Columns[1]:SetTextColor(Color(0,0,0,255))
-
-			if v:IsSelected() then
-				draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,255))
-				v.Columns[1]:SetTextColor(Color(255,0,0,255))
-			end
-
-		end
-	end
-
-	function view.Header.Paint()
-		draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150))
-		view.Header:SetTextColor(Color(0,0,0,255))
-	end
-
-	local view2 = vgui.Create("DListView", backpanel)
-	view2:SetPos(backpanel:GetWide() - view1:GetWide() - 5,30)
-	view2:SetSize(backpanel:GetWide()/2 - 30, backpanel:GetTall()-35)
-	view2:SetMultiSelect( false )
-	local view = view2:AddColumn("On ESP")
-	for k,v in pairs(t.esp.entities) do
-		view2:AddLine(v)
-	end
-
-	view_paint(view2)
-
-	for k,v in pairs(view2:GetLines()) do
-		function v.Paint()
-			local val = v:GetValue()
-			draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,0)) -- Column background
-			v.Columns[1]:SetTextColor(Color(0,0,0,255))
-
-			if v:IsSelected() then
-				draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,255))
-				v.Columns[1]:SetTextColor(Color(255,0,0,255))
-			end
-
-		end
-	end
-
-	local function refresh()
-
-		if IsValid(view2) then
-			view2:Clear()
-			for k,v in pairs(t.esp.entities) do
-				view2:AddLine(v)
-			end
-		end
-
-		entities = {}
-
-		if IsValid(view1) then
-			view1:Clear()
-
-			for k,v in pairs(ents.GetAll()) do
-				local class = v:GetClass()
-			
-				if !table.HasValue(entities,class) then
-					table.insert(entities,class)
-					view1:AddLine(class)
-				end
-			
-			end
-
-		end
-
-
-	
-
-
-	end
-
-	function view.Header.Paint()
-		draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150)) -- On ESP header Color
-		view.Header:SetTextColor(Color(0,0,0,255))
-	end
-
-	local but = vgui.Create("DButton", backpanel)
-	but:SetPos(view1:GetWide() + 10, backpanel:GetTall()/2 - 10)
-	but:SetSize(40,20)
-	but:SetText("->")
-	btn_paint(but)
-	function but.DoClick()
-		local class = view1:GetSelected()[1].Columns[1]:GetValue() -- Something tells me I'm overcomplicating it ^.^
-		print(class)
-
-		if !table.HasValue(t.esp.entities, class) then
-			table.insert(t.esp.entities,class)
+	local gskel = vgui.Create("DCheckBoxLabel", Misc)
+	gskel:SetText("Rainbow Skeleton")
+	gskel:SetPos(5,5)
+	gskel:SetChecked(t.esp.gskeleton)
+	gskel:SizeToContents()
+	function gskel.OnChange( change )
+		if change then
+			t.esp.gskeleton = true
 		else
-			draw.SimpleText('')
+			t.esp.gskeleton = false
 		end
-
-		refresh()
-		end
-
-	local but = vgui.Create("DButton", backpanel)
-	but:SetPos(view1:GetWide() + 10, backpanel:GetTall()/2 + 15)
-	but:SetSize(40,20)
-	but:SetText("<-")
-	btn_paint(but)
-	function but.DoClick()
-		local class = view2:GetSelected()[1].Columns[1]:GetValue()
-
-		if table.HasValue(t.esp.entities, class) then
-			table.RemoveByValue(t.esp.entities,class)
-		end
-
-		refresh()
-
 	end
-
+	
+	local gents = vgui.Create("DCheckBoxLabel",Misc)
+	gents:SetText("Rainbow Entities")
+	gents:SetPos(5,25)
+	gents:SetChecked(t.esp.entityr)
+	gents:SizeToContents()
+	function gents.OnChange( change )
+		if change then
+			t.esp.entityr = true
+		else
+			t.esp.entityr = false
+		end
+	end
+	
+	local EntityButOpen = vgui.Create("DButton", Frame)
+	EntityButOpen:SetText("Entity ESP Menu")
+	EntityButOpen:SetPos(25,475)
+	EntityButOpen:SetSize(150,20)
+	EntityButOpen.DoClick = function()
+		entesp()
+	end
 	Tabs:AddSheet( "ESP", ESP, "icon16/user.png")
 	Tabs:AddSheet( "Misc", Misc, "icon16/user.png")
-	Tabs:AddSheet( "Entity Finder", EntityFinder, "icon16/user.png")
 	
 	Frame.OnClose = function()
         _G.counter = 0
     end
 end
+
+function entesp() -- courtesy of pony.lua
+		local backpanel = vgui.Create("DFrame")
+		backpanel:SetTitle("Entity list")
+		backpanel:Center()
+		backpanel:SetDraggable( true )
+		backpanel:SetSize( ScrW() * 0.50, ScrH() * 0.50 )
+		backpanel:ShowCloseButton( true )
+		function backpanel.Paint()
+			draw.RoundedBox(2, 0, 0, backpanel:GetWide(), backpanel:GetTall(), Color(255,255,255,255))
+			draw.RoundedBox(2, 1, 1, backpanel:GetWide() - 2, backpanel:GetTall() - 2, Color(102,0,255,150)) -- Border
+			draw.RoundedBox(0, 0, 0, backpanel:GetWide(), 22, Color(102,0,255,150)) -- Outer Border 
+		end
+
+		local view1 = vgui.Create("DListView", backpanel)
+		view1:SetPos(5,30)
+		view1:SetSize(backpanel:GetWide()/2 - 30, backpanel:GetTall()-35)
+		local view = view1:AddColumn("Not on ESP")
+		view1:SetMultiSelect( false )
+
+		view_paint(view1)
+
+		local entities = {}
+		for k,v in pairs(ents.GetAll()) do
+			local class = v:GetClass()
+			if !table.HasValue(entities,class) then
+				table.insert(entities,class)
+				view1:AddLine(class)
+			end
+		end
+
+		for k,v in pairs(view1:GetLines()) do
+			function v.Paint()
+				local val = v:GetValue()
+				draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(102,0,255,0)) -- Not on ESP Column Color
+				v.Columns[1]:SetTextColor(Color(0,0,0,255))
+
+				if v:IsSelected() then
+					draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,255))
+					v.Columns[1]:SetTextColor(Color(255,0,0,255))
+				end
+
+			end
+		end
+
+		function view.Header.Paint()
+			draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150))
+			view.Header:SetTextColor(Color(0,0,0,255))
+		end
+
+		local view2 = vgui.Create("DListView", backpanel)
+		view2:SetPos(backpanel:GetWide() - view1:GetWide() - 5,30)
+		view2:SetSize(backpanel:GetWide()/2 - 30, backpanel:GetTall()-35)
+		view2:SetMultiSelect( false )
+		local view = view2:AddColumn("On ESP")
+		for k,v in pairs(t.esp.entities) do
+			view2:AddLine(v)
+		end
+
+		view_paint(view2)
+
+		for k,v in pairs(view2:GetLines()) do
+			function v.Paint()
+				local val = v:GetValue()
+				draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,0)) -- Column background
+				v.Columns[1]:SetTextColor(Color(0,0,0,255))
+
+				if v:IsSelected() then
+					draw.RoundedBox(0, 1, 1, v:GetWide() - 2, v:GetTall() - 2, Color(255,255,255,255))
+					v.Columns[1]:SetTextColor(Color(255,0,0,255))
+				end
+
+			end
+		end
+
+		local function refresh()
+
+			if IsValid(view2) then
+				view2:Clear()
+				for k,v in pairs(t.esp.entities) do
+					view2:AddLine(v)
+				end
+			end
+
+			entities = {}
+
+			if IsValid(view1) then
+				view1:Clear()
+
+				for k,v in pairs(ents.GetAll()) do
+					local class = v:GetClass()
+				
+					if !table.HasValue(entities,class) then
+						table.insert(entities,class)
+						view1:AddLine(class)
+					end
+				
+				end
+
+			end
+
+		end
+
+		function view.Header.Paint()
+			draw.RoundedBox(0, 0, 0, view.Header:GetWide(), view.Header:GetTall(), Color(102,0,255,150)) -- On ESP header Color
+			view.Header:SetTextColor(Color(0,0,0,255))
+		end
+
+		local but = vgui.Create("DButton", backpanel)
+		but:SetPos(view1:GetWide() + 10, backpanel:GetTall()/2 - 10)
+		but:SetSize(40,20)
+		but:SetText("->")
+		btn_paint(but)
+		function but.DoClick()
+			local class = view1:GetSelected()[1].Columns[1]:GetValue() -- Something tells me I'm overcomplicating it ^.^
+			if !table.HasValue(t.esp.entities, class) then
+				table.insert(t.esp.entities,class)
+			else
+				draw.SimpleText('')
+			end
+			refresh()
+			end
+		local but = vgui.Create("DButton", backpanel)
+		but:SetPos(view1:GetWide() + 10, backpanel:GetTall()/2 + 15)
+		but:SetSize(40,20)
+		but:SetText("<-")
+		btn_paint(but)
+		function but.DoClick()
+			local class = view2:GetSelected()[1].Columns[1]:GetValue()
+
+		if table.HasValue(t.esp.entities, class) then
+			table.RemoveByValue(t.esp.entities,class)
+		end
+		refresh()
+	end
+end
+	
 
 function ESP(v) -- courtesy of pasteware
 	local pos = em.GetPos(v);
@@ -443,9 +466,11 @@ hook.Add('HUDPaint','painthud', function()
 				cam.IgnoreZ(false)
 
 			cam.End3D()
-
-			pony.drawtext(class, posy.x - classize*0.5,posy.y)
-
+			if t.esp.entityr then
+				draw.DrawText(class, "TargetID", posy.x - classize*0.5, posy.y, Color(math.random(0,255)%360,math.random(0,255)%360,math.random(0,255)%360, 255)) 
+			else
+				draw.DrawText(class, "TargetID", posy.x - classize*0.5, posy.y, Color(0,0,0,255)) 
+			end
 		end
 
 	end
@@ -465,7 +490,7 @@ end)
 
 hook.Add("Think",'ins', function()
     if input.IsKeyDown(KEY_INSERT) then
-        if _G.counter < 1 then
+        if _G.counter	 < 1 then
             menu()
         end
     end
