@@ -24,9 +24,6 @@ t.esp.gskeleton = false
 t.esp.xyz = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
 
---[[for k,v in pairs(t.esp) do
-	print(k,v)
-end]]--
 local function Copy1(tt, lt)
 	local copy = {}
 	if lt then
@@ -65,8 +62,6 @@ local em = FindMetaTable"Entity";
 local pm = FindMetaTable"Player";
 local vm = FindMetaTable"Vector";
 local render = Copy1(render);
-
-
 
 if(!IsValid(me)) then me = LocalPlayer() return end
 	LocalPlayer():ConCommand("cl_interp 0; cl_interp_ratio 0; cl_cmdrate 200; cl_updaterate 200; rate 51200");
@@ -177,7 +172,7 @@ function menu()
 	
 	local EntityButOpen = vgui.Create("DButton", Frame)
 	EntityButOpen:SetText("Entity ESP Menu")
-	EntityButOpen:SetPos(25,475)
+	EntityButOpen:SetPos(ScrH() * 0.02, ScrW() * 0.26)
 	EntityButOpen:SetSize(150,20)
 	EntityButOpen.DoClick = function()
 		entesp()
