@@ -50,7 +50,6 @@ local function Copy1(tt, lt)
 end
 local esptabnames = {"Enabled","Team Only","Enemy Only", "Admins", "Names", "Box", "Weapon","Health","Skeleton","Entity"}
 local esptabitems = {"Enabled","Team","Enemy", "Admin", "Name", "Box", "Weapon","Health","Skeleton","Entity"}
-local esptabtable = {"enabled","team","enemy", "admin", "name", "box", "weapon","health","skeleton","entity"}
 local me = LocalPlayer()
 local mpos = me:GetPos()
 local counter = 0 
@@ -130,22 +129,19 @@ function menu()
     end
 	
 	for k, v in pairs(esptabitems) do
-		local change = esptabtable[k]
+		local esptabl = string.lower(v)
 		local Easp = 'ESP'	
 		local conName = Easp..v
-		local conname = string.lower(v)
-		local conNAME = string.upper(v)
-		local conByte = string.len(conName)
 		local conName = vgui.Create( "DCheckBoxLabel", ESP )
 		conName:SetText(esptabnames[k])
 		conName:SetPos(5,posH)
-		conName:SetChecked(t.esp[''..esptabtable[k]])
+		conName:SetChecked(t.esp[''..esptabl])
 		conName:SizeToContents()
 		function conName:OnChange( change )
 			if change then
-				t.esp[''..esptabtable[k]] = true
+				t.esp[''..esptabl] = true
 			else
-				t.esp[''..esptabtable[k]] = false
+				t.esp[''..esptabl] = false
 			end
 		end
 		posH = posH +20
