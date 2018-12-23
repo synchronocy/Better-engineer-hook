@@ -9,3 +9,5 @@ Update log;
 [+] Derma [+]
 
     [-] Improved current Menu creation system [-]
+    
+    [-] Possible fix to the Entity ESP Button to automatically adjust to user's screen resolution ~ Hopefully. [-]
