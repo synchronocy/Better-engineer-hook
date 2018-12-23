@@ -11,3 +11,7 @@ Update log;
     [-] Improved current Menu creation system [-]
     
     [-] Possible fix to the Entity ESP Button to automatically adjust to user's screen resolution ~ Hopefully. [-]
+
+[+] Code [+]
+
+    [-] Improved Backend code and tidied up a tad with positioning with identifying admins & superadmins [-]
