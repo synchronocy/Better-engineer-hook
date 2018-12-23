@@ -2,10 +2,9 @@
 
 --[[ For refernce I still have a ways to go but for now I'm pasting from documentation 
 TODO 
+[+] Entity ESP [+]
 [+] Color Changer [+]
 [+] Tidy up code [+]
-[+] Automate other tabs
-[+] Improve current automation system [+]
 ]]--
 _G.counter = 0
 local t = {}
@@ -20,7 +19,7 @@ t.esp.weapon = false
 t.esp.health = false
 t.esp.skeleton = false
 t.esp.entity = false
-t.esp.entityr = false
+t.esp.entr = false
 t.esp.gskeleton = false
 t.esp.xyz = false
 t.esp.entities = {"money_printer", "spawned_money", "spawned_shipment"}
@@ -168,13 +167,15 @@ function menu()
 	local gents = vgui.Create("DCheckBoxLabel",Misc)
 	gents:SetText("Rainbow Entities")
 	gents:SetPos(5,25)
-	gents:SetChecked(t.esp.entityr)
+	gents:SetChecked(t.esp.entr)
 	gents:SizeToContents()
 	function gents.OnChange( change )
-		if change then
-			t.esp.entityr = true
-		else
-			t.esp.entityr = false
+		if gents:GetChecked() then
+			print('True!')
+			t.esp.entr = true
+		elseif gents:GetChecked() == false then -- absolute terrible way to do this but ¯\_(ツ)_/¯
+			print('False!')
+			t.esp.entr = false
 		end
 	end
 	
@@ -466,7 +467,8 @@ hook.Add('HUDPaint','painthud', function()
 				cam.IgnoreZ(false)
 
 			cam.End3D()
-			if t.esp.entityr then
+			
+			if t.esp.entr == true then
 				draw.DrawText(class, "TargetID", posy.x - classize*0.5, posy.y, Color(math.random(0,255)%360,math.random(0,255)%360,math.random(0,255)%360, 255)) 
 			else
 				draw.DrawText(class, "TargetID", posy.x - classize*0.5, posy.y, Color(0,0,0,255)) 
