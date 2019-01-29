@@ -1,4 +1,4 @@
--- project Athena --
+-- project Athena -- aka Better Engineerhook
 
 --[[ For refernce I still have a ways to go but for now I'm pasting from documentation 
 TODO 
@@ -100,7 +100,7 @@ function menu()
     Frame:SetParent( DermaPanel )
     Frame:SetPos( 5, 30 )
     Frame:SetSize( ScrW() * 0.50, ScrH() * 0.50 )
-    Frame:SetTitle( "Athena" )
+    Frame:SetTitle( "Better Engineerhook" ) -- but lua ;)
     Frame:SetVisible( true )
     Frame:SetDraggable( true )
     Frame:Center()
