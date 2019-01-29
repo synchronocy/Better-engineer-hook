@@ -1,4 +1,4 @@
-# Garrysmod-No-Strings-Attached
+# Better-engineer-hook
 First basic cheat, just as a learning exercise.
 
 
