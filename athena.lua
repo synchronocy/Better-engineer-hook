@@ -2,7 +2,7 @@
 
 --[[ For refernce I still have a ways to go but for now I'm pasting from documentation 
 TODO 
-[+] Entity ESP [+]
+[+] Add Team / Enemy ESP Support [+]
 [+] Color Changer [+]
 [+] Tidy up code [+]
 ]]--
